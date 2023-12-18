@@ -1,7 +1,25 @@
-import React from "react";
+import React, { useContext, useState } from "react";
 import logo from "../Assets/logo.png";
-import { Link } from "react-router-dom";
+import { Link, useNavigate } from "react-router-dom";
+import { firebaseContext } from "../Context/FirebaseContext";
 function Login() {
+  const nav = useNavigate();
+  const { login } = useContext(firebaseContext);
+
+  const [email, setEmail] = useState("");
+  const [password, setPassword] = useState("");
+  const [error, setError] = useState("");
+
+  const handleLogin = async (e) => {
+    e.preventDefault();
+    try {
+      await login(email, password);
+      nav("/");
+    } catch (error) {
+      setError(error.message);
+    }
+  };
+
   return (
     <div
       style={{
@@ -13,11 +31,23 @@ function Login() {
         <div className="bg-white p-8 rounded-md shadow-md w-full max-w-md">
           {/* Logo at the top center */}
           <div className="flex items-center justify-center mb-8">
-            <img src={logo} alt="Logo" className="h-24 w-34" />
+            <img
+              src={logo}
+              alt="Logo"
+              className="h-24 w-34 cursor-pointer"
+              onClick={() => nav("/")}
+            />
+          </div>
+          <div>
+            {error && (
+              <p className="mb-4 text-sm bg-red-400 py-3 w-full px-2 rounded-md font-semibold text-white">
+                {error}
+              </p>
+            )}
           </div>
 
           {/* Login Form */}
-          <form>
+          <form onSubmit={handleLogin}>
             <div className="mb-4">
               <label
                 htmlFor="email"
@@ -26,11 +56,13 @@ function Login() {
                 Email
               </label>
               <input
+                value={email}
                 type="email"
                 id="email"
                 name="email"
                 className="w-full p-2 border border-gray-300 rounded-md focus:outline-none focus:border-blue-500"
                 placeholder="Enter your email"
+                onChange={(e) => setEmail(e.target.value)}
               />
             </div>
 
@@ -42,6 +74,8 @@ function Login() {
                 Password
               </label>
               <input
+                value={password}
+                onChange={(e) => setPassword(e.target.value)}
                 type="password"
                 id="password"
                 name="password"

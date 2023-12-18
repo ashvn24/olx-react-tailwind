@@ -1,11 +1,13 @@
-import React from 'react'
+import React, { useContext } from 'react'
 import olx from "../Assets/olx.png";
 import { useNavigate } from 'react-router-dom';
+import { firebaseContext } from '../Context/FirebaseContext';
 
 
 function Navbar() {
 
   const nav = useNavigate()
+  const {user,signout} = useContext(firebaseContext)
 
   return (
     
@@ -13,8 +15,8 @@ function Navbar() {
       <nav className="bg-gray-400 p-2 flex items-center justify-between">
         {/* Logo on the left */}
         <div className="flex items-center">
-          <img src={olx} alt="Logo" className="h-10 w-14 mr-2" />
-          {/* <span className="text-white font-semibold text-lg">YourLogo</span> */}
+          <img src={olx} alt="Logo" className="h-10 w-14 mr-2 cursor-pointer" onClick={()=>nav('/')}/>
+          
         </div>
 
         {/* Search bar in the middle */}
@@ -28,8 +30,9 @@ function Navbar() {
 
         {/* Login and Sell buttons on the right */}
         <div className="flex items-center">
-          <button className="text-white mr-4" onClick={()=>nav('/login')} >Login</button>
-          <button className="bg-green-500 text-white px-4 py-2 rounded-md">Sell</button>
+         {user?<span className='text-white mr-4'>{user.displayName}</span> : <button className="text-white mr-4" onClick={()=>nav('/login')} >Login</button>}
+         {user && <button className="text-white mr-4 bg-yellow-500 px-4 py-2 rounded-md font-bold" onClick={()=>{ signout(); nav('/')}} >Logout</button>}
+          <button className="bg-green-500 text-white px-4 py-2 rounded-md font-bold" onClick={()=>{user? nav('/create'):nav('/login')}}>Sell</button>
         </div>
       </nav>
     </div>

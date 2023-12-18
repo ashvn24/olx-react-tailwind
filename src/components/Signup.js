@@ -1,34 +1,33 @@
 import React, { useContext, useState } from 'react'
 import logo from '../Assets/logo.png'
+import { Link, useNavigate } from 'react-router-dom';
+
 import { firebaseContext } from "../Context/FirebaseContext";
-import { useNavigate } from 'react-router-dom';
 
 function Signup() {
 
-  const nav = useNavigate()
+  const { createUser,update,store } = useContext(firebaseContext)
 
-  const {firebase} = useContext(firebaseContext)
+  const nav = useNavigate()
 
   const [username, setUsername] = useState('')
   const [email, setEmail] = useState('')
   const [Phone, setPhone] = useState('')
   const [password, setPassword] = useState('')
+  const [error, setError] = useState('')
 
-  const handleSignin=(e)=>{
+  const handleSignin = async (e) => {
     e.preventDefault()
-    firebase.auth().createUserWithEmailAndPassword(email, password)
-      .then((result) => {
-        console.log(result.user)
-        result.user.updateProfile({ displayName: username }).then(() => {
-          firebase.firestore().collection("users").add({
-            id: result.user.uid,
-            username: username,
-            phone: Phone,
-          }).then(()=>{
-          nav('/login')
+    try {
+        await createUser(email,password).then(()=>{
+          update(username)
+        }).then(()=>{
+          store(username,Phone)
         })
-      })
-    })
+        nav('/')
+    } catch (error) {
+      setError(error.message)
+    }
   }
 
   return (
@@ -37,9 +36,13 @@ function Signup() {
       <div className="bg-white p-8 rounded-md shadow-md w-full max-w-md">
         {/* Logo at the top center */}
         <div className="flex items-center justify-center mb-8">
-          <img src={logo} alt="Logo" className="h-24 w-34" />
+          <img src={logo} alt="Logo" className="h-24 w-34 cursor-pointer"
+              onClick={() => nav("/")}/>
         </div>
+        <div>
+        { error && <p className="mb-4 text-sm bg-red-400 py-3 w-full px-2 rounded-md font-semibold text-white">{error}</p> }
 
+        </div>
         {/* Signup Form */}
         <form onSubmit={handleSignin}>
           <div className="mb-4">
@@ -114,9 +117,9 @@ function Signup() {
 
           <p className="text-gray-600 text-sm">
             Already have an account?{' '}
-            <a href="/login" className="text-blue-500 hover:underline">
+            <Link to="/login" className="text-blue-500 hover:underline">
               Log in here
-            </a>
+            </Link>
           </p>
         </form>
       </div>
