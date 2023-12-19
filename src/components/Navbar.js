@@ -30,7 +30,7 @@ function Navbar() {
 
         {/* Login and Sell buttons on the right */}
         <div className="flex items-center">
-         {user?<span className='text-white mr-4'>{user.displayName}</span> : <button className="text-white mr-4" onClick={()=>nav('/login')} >Login</button>}
+         {user?<span className='text-white mr-4 cursor-pointer' onClick={()=>nav('/profile')}>{user.displayName}</span> : <button className="text-white mr-4" onClick={()=>nav('/login')} >Login</button>}
          {user && <button className="text-white mr-4 bg-yellow-500 px-4 py-2 rounded-md font-bold" onClick={()=>{ signout(); nav('/')}} >Logout</button>}
           <button className="bg-green-500 text-white px-4 py-2 rounded-md font-bold" onClick={()=>{user? nav('/create'):nav('/login')}}>Sell</button>
         </div>

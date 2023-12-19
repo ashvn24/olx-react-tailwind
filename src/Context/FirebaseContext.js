@@ -6,7 +6,7 @@ import {
   onAuthStateChanged,
   updateProfile,
 } from "firebase/auth";
-import { collection, addDoc, getDocs,getDoc, doc, query, where } from "firebase/firestore"; 
+import { collection, addDoc, getDocs, doc, query, where, deleteDoc } from "firebase/firestore"; 
 import { auth, db } from "../Firebase/Config";
 import { getDownloadURL,ref, uploadBytes } from "firebase/storage";
 import { storage } from "../Firebase/Config";
@@ -16,6 +16,7 @@ export const firebaseContext = createContext(null);
 export default function Firebase({ children }) {
 
   const [user, setUser] = useState('')
+  
 
     useEffect(() => {
       onAuthStateChanged(auth,(currentUser)=>{
@@ -39,11 +40,12 @@ export default function Firebase({ children }) {
       return signInWithEmailAndPassword(auth,email,password)
     }
 
-    const store = async (username,phone) =>{
+    const store = async (username,phone,email) =>{
       return await addDoc(collection(db,'userss'),{
         id:auth.currentUser.uid,
         username:username,
-        phone:phone
+        phone:phone,
+        email:email,
       })
     }
 
@@ -99,8 +101,40 @@ export default function Firebase({ children }) {
       return signOut(auth)
     }
 
+    const [userProfile, setUserProfile] = useState('')
+    const [userProfiledata, setUserProfiledata] = useState([])
+    const profile = () => {
+      return getDocs(query(collection(db, 'userss'), where('id', '==', auth.currentUser.uid)))
+        .then((snap) => {
+          snap.forEach((doc) => {
+            console.log(doc.data());
+            setUserProfile(doc.data());
+          });
+        })
+        .then(async () => {
+          // Use await here to wait for the promise to resolve
+          const snapshot = await getDocs(query(collection(db, 'Product'), where('userId', '==', auth.currentUser.uid)));
+          
+          const data = snapshot.docs.map((doc) => ({
+            ...doc.data(),
+            id: doc.id
+          }));
+    
+          setUserProfiledata(data);
+          console.log(userProfiledata);
+        })
+        .catch((error) => {
+          console.error('Error in profile function:', error);
+        });
+    };
+    
+    const Delete =(id)=>{
+      
+       deleteDoc(doc(db, "Product", id));      
+    }
+
   return (
-    <firebaseContext.Provider value={{ createUser,update,user,login,store,signout,sellItem,post,posts,view,setView,viewPost,userdetails }}>
+    <firebaseContext.Provider value={{ createUser,update,user,login,store,signout,sellItem,post,posts,view,setView,viewPost,userdetails,userProfile,userProfiledata,profile,Delete }}>
       {children}
     </firebaseContext.Provider>
   );

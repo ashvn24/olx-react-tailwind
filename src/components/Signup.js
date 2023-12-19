@@ -22,7 +22,7 @@ function Signup() {
         await createUser(email,password).then(()=>{
           update(username)
         }).then(()=>{
-          store(username,Phone)
+          store(username,Phone,email)
         })
         nav('/')
     } catch (error) {
