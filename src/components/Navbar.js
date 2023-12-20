@@ -12,7 +12,7 @@ function Navbar() {
   return (
     
     <div >
-      <nav className="bg-gray-400 p-2 flex items-center justify-between">
+      <nav className="bg-blue-950 p-2 flex items-center justify-between">
         {/* Logo on the left */}
         <div className="flex items-center">
           <img src={olx} alt="Logo" className="h-10 w-14 mr-2 cursor-pointer" onClick={()=>nav('/')}/>

@@ -3,14 +3,17 @@ import Navbar from './Navbar'
 import profileimg from '../Assets/profile.jpg'
 import { FaEdit } from 'react-icons/fa';
 import { firebaseContext } from '../Context/FirebaseContext';
+import { useNavigate } from 'react-router-dom';
+import Footer from './Footer';
 
 function Profile() {
+    const nav = useNavigate()
     const {userProfile,profile,userProfiledata,Delete} = useContext(firebaseContext)
 
     useEffect(() => {
       profile()
     
-    }, [])
+    }, )
     
   return (
     <div>
@@ -65,7 +68,7 @@ function Profile() {
                 </div>
 
                 <div className="flex justify-between p-4 bg-gray-100">
-                  <button className="bg-red-500 rounded-md py-2 px-2 text-white font-semibold" onClick={()=>{Delete(doc.id)}}>Delete</button>
+                  <button className="bg-red-500 rounded-md py-2 px-2 text-white font-semibold" onClick={()=>{Delete(doc.id);nav('/profile')}}>Delete</button>
                   {/* <button className="text-gray-500">Save</button> */}
                 </div>
               </div>
@@ -75,6 +78,7 @@ function Profile() {
       </div>
       </div>
     </div>
+    <Footer/>
     </div>
   )
 }

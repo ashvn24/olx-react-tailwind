@@ -40,6 +40,7 @@ export default function Firebase({ children }) {
       return signInWithEmailAndPassword(auth,email,password)
     }
 
+    
     const store = async (username,phone,email) =>{
       return await addDoc(collection(db,'userss'),{
         id:auth.currentUser.uid,

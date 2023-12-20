@@ -11,8 +11,8 @@ function Posts() {
 
   return (
     <div>
-      <div className="bg-gray-100 rounded-md p-4">
-        <h2>Most Popular</h2>
+      <div className="bg-white rounded-md p-4 m-5">
+        <h2 className="font-bold">Most Popular</h2>
         <div className="container mt-3 flex flex-wrap -mx-3">
           {/* single post card */}
           {posts.map((doc, index) => (
